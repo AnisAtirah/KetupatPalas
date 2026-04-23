@@ -1,0 +1,13 @@
+file_name,description,rows
+pediatrics_daily_operations_clean.csv,Daily integrated pediatric operations dataset,1461
+pediatrics_merged_hospital_data.csv,Appointment-level merged dataset,25846
+pediatrics_Appointment.csv,Appointments table,25846
+pediatrics_Medical_Procedure.csv,Procedure table,25846
+pediatrics_Billing.csv,Billing / invoice-level table,25846
+pediatrics_Patient.csv,Patient master table,3200
+pediatrics_Doctor.csv,Doctor master table,22
+pediatrics_doctor_availability_daily.csv,Daily doctor staffing,1461
+pediatrics_nurse_availability_daily.csv,Daily nurse staffing,1461
+pediatrics_Bed.csv,Daily bed data by pediatric ward,5844
+pediatrics_billing_summary.csv,Monthly billing summary,48
+pediatrics_specialization_summary.csv,Summary by pediatric specialization,7
