@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Hospital AI Suggestion</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <main class="page">
+    <section class="ai-card">
+      <h1>AI Suggestion</h1>
+
+      <div id="statusBox" class="status-box">System ready</div>
+
+      <div id="suggestionList" class="suggestion-list">
+        <div class="suggestion-item skeleton"></div>
+        <div class="suggestion-item skeleton"></div>
+        <div class="suggestion-item skeleton"></div>
+      </div>
+
+      <button id="generateBtn" class="btn btn-primary">Generate ✦</button>
+      <button id="seeAllBtn" class="btn btn-secondary">See All</button>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>All Recommendations</h2>
+        <button id="closeModalBtn" class="close-btn">×</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
