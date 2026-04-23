@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hospital AI Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">HaiDIS</div>
+        <div class="nav-tabs">
+            <a href="first.html" class="nav-item">Dashboard</a>
+            <a href="second.html" class="nav-item">Simulation</a>
+        </div>
+    </nav>
+
+   <section id="situation" class="bg-wrapper">
+
+    <h1>Hospital AI Decision Intelligence System</h1>
+
+    <div class="container">
+        <h2>What's the situation today?</h2>
+    
+        <div class="floating-panel">
+            
+            <div class="card">
+                <h3>Total Patients</h3>
+                <p id="patientsValue">67</p>
+            </div>
+
+            <div class="card">
+                <h3>WAITING TIME</h3>
+                <p id="waitingTime">2 hrs</p>
+            </div>
+
+            <div class="card">
+                <h3>STAFF ON DUTY</h3>
+                <p id="staffNumber">67</p>
+            </div>
+
+            <div class="card">
+                <h3>BEDS</h3>
+                <p id="bedValue">67</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="analysis" class="split-screen">
+
+    <div class="column-wrapper">
+        <div id="ai-suggestion" class="left-column">
+            <h2>AI Suggestion</h2>
+            <div class="suggestion-card">Provide 2 more beds...</div>
+            <div class="suggestion-card">Provide 2 more beds...</div>
+            <div class="suggestion-card">Provide 2 more beds...</div>
+            <button class="generate-btn">Generate</button>
+            <button class="see-all-btn">See All</button>
+        </div>
+    </div>        
+
+    <div class="column-wrapper">
+        <div id="cost-efficiency" class="right-column">
+            <h2>Cost vs Efficiency</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    + Cost Increase
+                    <div class="cost-increase">+0.25%</div>
+                </div>
+                
+                <div class="stat-card">
+                    Patient Served
+                    <div class="patients-served">67</div>
+                </div>
+            </div>
+
+            <div class="wide-card">
+                Wait-time reduction
+                <div class="wait-time-reduction">- 1.67 hrs</div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+<script src="script.js"></script>
+</body>
+</html>
