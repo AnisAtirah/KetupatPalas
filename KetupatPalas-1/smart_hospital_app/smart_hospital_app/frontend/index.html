@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Hospital Resources Management</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">AI-assisted prototype</p>
+      <h1>Smart Hospital Resources Management</h1>
+      <p class="subtext">
+        A simple what-if simulator for doctor allocation, staffing pressure,
+        waiting time, cost impact, and AI recommendation.
+      </p>
+    </div>
+    <div class="badge">AI ready</div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>🏥 Current Hospital State</h2>
+
+      <div class="form-grid">
+        <label>Patients
+          <input type="number" id="patients" value="80" readonly />
+        </label>
+        <label>Doctors
+          <input type="number" id="doctors" value="4" readonly />
+        </label>
+        <label>Nurses
+          <input type="number" id="nurses" value="10" readonly />
+        </label>
+        <label>Beds
+          <input type="number" id="beds" value="20" readonly />
+        </label>
+        <label>Average Complexity
+          <input type="number" id="avg_complexity" value="2" readonly />
+        </label>
+      </div>
+
+      <h2 style="margin-top: 20px;">🔄 What-If Simulation</h2>
+
+      <form id="simForm" class="form-grid">
+        <label>+ Doctors
+          <input type="number" id="add_doctors" value="1" min="0" />
+        </label>
+        <label>+ Nurses
+          <input type="number" id="add_nurses" value="2" min="0" />
+        </label>
+        <label>+ Beds
+          <input type="number" id="add_beds" value="5" min="0" />
+        </label>
+
+        <button type="submit" class="primary">Run Simulation</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Simulation Result</h2>
+      <div id="resultCards" class="metrics"></div>
+
+      <div class="recommendation-box">
+        <h3>Recommendation</h3>
+        <p id="recommendationText">Run the simulation to see the recommendation.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
