@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hospital AI Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">HaiDIS</div>
+        <div class="nav-tabs">
+            <a href="first.html" class="nav-item">Situation</a>
+            <a href="second.html" class="nav-item">Analysis</a>
+            <a href="third.html" class="nav-item">Simulation</a>
+        </div>
+    </nav>
+
+    <div class="split-screen">
+        <div class="column-wrapper">
+            <div id="ai-suggestion" class="left-column">
+                <h2>AI Suggestion</h2>
+                <div class="suggestion-card">Provide 2 more beds...</div>
+                <div class="suggestion-card">Provide 2 more beds...</div>
+                <div class="suggestion-card">Provide 2 more beds...</div>
+                <button class="generate-btn">Generate</button>
+                <button class="see-all-btn">See All</button>
+            </div>
+        </div>        
+
+        <div class="column-wrapper">
+            <div id="cost-efficiency" class="right-column">
+                <h2>Cost vs Efficiency</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        + Cost Increase
+                        <div class="cost-increase">+0.25%</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        Patient Served
+                        <div class="patients-served">67</div>
+                    </div>
+                </div>
+                    <div class="wide-card">
+                        Wait-time reduction
+                        <div class="wait-time-reduction">- 1.67 hrs</div>
+                    </div>
+            </div>
+        </div>
+    
+    </div>
+
+    <script src="script.js"></script>
+</body>
