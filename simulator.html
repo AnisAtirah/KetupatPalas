@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hospital AI Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">HaiDIS</div>
+        <div class="nav-tabs">
+            <a href="first.html" class="nav-item">Dashboard</a>
+            <a href="second.html" class="nav-item">Simulation</a>
+        </div>
+    </nav>
+
+  <main class="grid">
+    <section class="card">
+
+      <h2 style="margin-top: 20px;">🔄 What-If Simulation</h2>
+
+      <form id="simForm" class="form-grid">
+        <label>+ Doctors
+          <input type="number" id="add_doctors" value="1" min="0" />
+        </label>
+        <label>+ Nurses
+          <input type="number" id="add_nurses" value="2" min="0" />
+        </label>
+        <label>+ Beds
+          <input type="number" id="add_beds" value="5" min="0" />
+        </label>
+
+        <button type="submit" class="primary">Run Simulation</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Simulation Result</h2>
+      <div id="resultCards" class="metrics"></div>
+
+      <div class="recommendation-box">
+        <h3>Recommendation</h3>
+        <p id="recommendationText">Run the simulation to see the recommendation.</p>
+      </div>
+    </section>
+  </main>
+    <script src="script.js"></script>
+</body>
