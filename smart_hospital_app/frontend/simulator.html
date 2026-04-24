@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar">
+        <div class="nav-logo">HaiDIS<span class="nav-title">Hospital AI Decision Intelligence System</span></div>
+        <div class="nav-tabs">
+            <a href="index.html" class="nav-item">Dashboard</a>
+            <a href="simulator.html" class="nav-item">Simulation</a>
+        </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <h1>What-If Simulation</h1>
+      <p class="subtext">
+        A simple what-if simulator for doctor allocation, staffing pressure,
+        waiting time, cost impact, and AI recommendation.
+      </p>
+    </div>
+    <div class="badge">AI ready</div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+
+      <form id="simForm" class="form-grid">
+        <label>+ Doctors
+          <input type="number" id="add_doctors" value="1" min="0" />
+        </label>
+        <label>+ Nurses
+          <input type="number" id="add_nurses" value="2" min="0" />
+        </label>
+        <label>+ Beds
+          <input type="number" id="add_beds" value="5" min="0" />
+        </label>
+
+        <button type="submit" class="primary">Run Simulation</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Simulation Result</h2>
+      <div id="resultCards" class="metrics"></div>
+
+      <div class="recommendation-box">
+        <h3>Recommendation</h3>
+        <p id="recommendationText">Run the simulation to see the recommendation.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

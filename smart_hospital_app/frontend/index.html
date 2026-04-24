@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar">
+        <div class="nav-logo">HaiDIS<span class="nav-title">Hospital AI Decision Intelligence System</span></div>
+        <div class="nav-tabs">
+            <a href="index.html" class="nav-item">Dashboard</a>
+            <a href="simulator.html" class="nav-item">Simulation</a>
+        </div>
+  </nav>
+
+  <header class="hero">
+    <!-- <div class="badge">AI ready</div> -->
+  </header>
+
+  <main class="grid">
+    <section class="card">
+
+      <div class="container">
+            <h2>What's the situation today?</h2>
+        
+            <div class="floating-panel">
+                
+                <div class="card">
+                    <h3>Total Patients</h3>
+                    <p id="patientsValue">67</p>
+                </div>
+
+                <div class="card">
+                    <h3>WAITING TIME</h3>
+                    <p id="waitingTime">2 hrs</p>
+                </div>
+
+                <div class="card">
+                    <h3>STAFF ON DUTY</h3>
+                    <p id="staffNumber">67</p>
+                </div>
+
+                <div class="card">
+                    <h3>BEDS</h3>
+                    <p id="bedValue">67</p>
+                </div>
+            </div>
+        </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
