@@ -1,4 +1,7 @@
-Flask==3.0.3
-openai>=1.40.0
-pandas>=2.2.2
-python-dotenv>=1.0.1
+flask
+flask-cors
+pandas
+requests
+python-dotenv
+openai
+gunicorn
