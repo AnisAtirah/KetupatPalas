@@ -156,13 +156,15 @@ def ask_ai_for_simulation(sim_result: Dict[str, Any]) -> Dict[str, str]:
     r = sim_result["results"]
 
     prompt = f"""
-Answer in exactly 3 short lines.
+You are a hospital resource decision assistant.
+
+Answer in exactly 3 short sections.
 Do not use JSON.
 Do not use markdown.
 
-Analysis: explain the current performance.
-Recommendation: suggest one resource action.
-Cost Impact: explain the cost effect.
+Analysis: explain what the result means and why the current condition happens.
+Recommendation: suggest one resource action and justify why it helps.
+Cost Impact: explain whether the added cost is reasonable compared to the expected benefit.
 
 Data:
 Wait time: {r['estimated_wait_time_minutes']} minutes
@@ -199,18 +201,43 @@ Status: {r['status']}
     analysis = ""
     recommendation = ""
     cost_impact = ""
+    current_section = None
 
     for line in content.strip().splitlines():
         line = line.strip()
+        if not line:
+            continue
 
-        if line.lower().startswith("analysis:"):
-            analysis = line.split(":", 1)[1].strip()
+        lower = line.lower()
 
-        elif line.lower().startswith("recommendation:"):
-            recommendation = line.split(":", 1)[1].strip()
+        if lower.startswith("analysis"):
+            current_section = "analysis"
+            if ":" in line:
+                analysis += line.split(":", 1)[1].strip() + " "
+            continue
 
-        elif line.lower().startswith("cost impact:"):
-            cost_impact = line.split(":", 1)[1].strip()
+        if lower.startswith("recommendation"):
+            current_section = "recommendation"
+            if ":" in line:
+                recommendation += line.split(":", 1)[1].strip() + " "
+            continue
+
+        if lower.startswith("cost impact") or lower.startswith("cost"):
+            current_section = "cost"
+            if ":" in line:
+                cost_impact += line.split(":", 1)[1].strip() + " "
+            continue
+
+        if current_section == "analysis":
+            analysis += line + " "
+        elif current_section == "recommendation":
+            recommendation += line + " "
+        elif current_section == "cost":
+            cost_impact += line + " "
+
+    analysis = analysis.strip()
+    recommendation = recommendation.strip()
+    cost_impact = cost_impact.strip()
 
     if not analysis or not recommendation or not cost_impact:
         raise ValueError("AI response format is invalid.")
