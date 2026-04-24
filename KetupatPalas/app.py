@@ -178,42 +178,42 @@ def ask_ai_for_simulation(sim_result: Dict[str, Any]) -> str:
     url      = base_url.rstrip("/") + "/chat/completions"
 
     if not api_key:
-        print("[AI] No API key found — using rule-based fallback")
-        return build_rule_based_recommendation(sim_result)
+        return "⚠️ AI error: API key is missing. Please check your .env file."
 
     inp = sim_result["inputs"]
     r   = sim_result["results"]
 
     prompt = f"""
-You are an assistant for a Pediatrics hospital resource dashboard.
+You are an AI assistant for a Pediatrics hospital resource dashboard.
 
 Analyze this simulation result and give:
-1. A short performance analysis
-2. A short recommendation
-3. A short cost-impact comment
+1. Performance analysis
+2. Recommendation
+3. Cost impact
 
-Use simple English. Keep it under 120 words.
+Use simple English.
+Keep it under 120 words.
 
-Current real state:
-- Patients: {inp['patients']}
-- Doctors: {inp['doctors']}
-- Nurses: {inp['nurses']}
-- Beds: {inp['beds']}
+Current state:
+Patients: {inp['patients']}
+Doctors: {inp['doctors']}
+Nurses: {inp['nurses']}
+Beds: {inp['beds']}
 
-After what-if changes:
-- Doctors: {r['total_doctors']}
-- Nurses: {r['total_nurses']}
-- Beds: {r['total_beds']}
+After changes:
+Doctors: {r['total_doctors']}
+Nurses: {r['total_nurses']}
+Beds: {r['total_beds']}
 
 Simulation result:
-- Wait time: {r['estimated_wait_time_minutes']} minutes
-- Patients served: {r['estimated_patients_served']}
-- Doctor load: {r['doctor_load']}
-- Nurse load: {r['nurse_load']}
-- Added cost: RM{r['staffing_cost_rm']}
-- Status: {r['status']}
+Wait time: {r['estimated_wait_time_minutes']} minutes
+Patients served: {r['estimated_patients_served']}
+Doctor load: {r['doctor_load']}
+Nurse load: {r['nurse_load']}
+Added cost: RM{r['staffing_cost_rm']}
+Status: {r['status']}
 
-Explain whether this scenario improves hospital performance and why.
+Give an AI recommendation only based on this data.
 """
 
     headers = {
@@ -224,24 +224,27 @@ Explain whether this scenario improves hospital performance and why.
     payload = {
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 4000,
+        "max_tokens": 2500,
         "temperature": 0.3,
     }
 
     try:
-        res = requests.post(url, headers=headers, json=payload, timeout=60)
+        res = requests.post(url, headers=headers, json=payload, timeout=120)
         res.raise_for_status()
         data = res.json()
         return data["choices"][0]["message"]["content"].strip()
+
     except requests.exceptions.Timeout:
-        print("[AI] Request timed out — using rule-based fallback")
-        return build_rule_based_recommendation(sim_result)
+        print("[AI] Timeout")
+        return "⚠️ AI error: The AI took too long to respond. Please try again."
+
     except Exception as exc:
         if hasattr(exc, "response") and exc.response is not None:
             print(f"[AI] Status: {exc.response.status_code}")
-            print(f"[AI] Body:   {exc.response.text}")
+            print(f"[AI] Body: {exc.response.text}")
+
         print(f"[AI] Error: {exc}")
-        return build_rule_based_recommendation(sim_result)
+        return "⚠️ AI error: AI service is currently unavailable. Please check API key, model, or internet connection."
 
 
 # ─── Dashboard routes ─────────────────────────────────────────────────────────
@@ -351,5 +354,5 @@ def api_recommendation():
 
 # ─── Entry point ──────────────────────────────────────────────────────────────
 
-if __name__ == '__main__':
-    app.run(debug=False)
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
