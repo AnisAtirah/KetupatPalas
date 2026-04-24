@@ -21,7 +21,7 @@
   <!-- TOP: Situation Hero -->
   <section id="situation" class="bg-wrapper">
     <div class="container">
-      <h2>What's the situation today?</h2>
+      <h1>What's the situation today?</h1>
       <div class="floating-panel">
         <div class="card">
           <h3>Total Patients</h3>
@@ -51,7 +51,7 @@
       <div id="ai-suggestion" class="left-column">
         <h2>AI Suggestion</h2>
 
-        <div id="suggestionList" style="width:80%; display:flex; flex-direction:column; gap:12px; flex-grow:1;">
+        <div id="suggestionList" style="width:95%; display:flex; flex-direction:column; gap:12px; flex-grow:1;">
           <div class="suggestion-card">Loading...</div>
           <div class="suggestion-card">Loading...</div>
           <div class="suggestion-card">Loading...</div>
@@ -66,67 +66,52 @@
     <div class="column-wrapper">
       <div id="cost-efficiency" class="right-column">
         <h2>Cost vs Efficiency</h2>
-        <p style="font-size:13px; color:var(--grey-azure); margin-bottom:14px;">Live simulation — updates every 10s</p>
+        <p style="font-size:13px; color:var(--grey-azure); margin-bottom:14px;">Live Updates</p>
 
         <!-- Cost change + Wait change badges -->
         <div class="stats-grid">
           <div class="stat-card">
-            Cost Change
-            <div id="simCostChange" style="font-size:28px; font-weight:700; margin-top:6px;">--</div>
-            <div style="font-size:12px; color:var(--grey-brown);">vs previous tick</div>
-          </div>
+  <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Cost Change</div>
+  <div id="simCostChange" style="font-size:28px; font-weight:700; margin-top:6px;">--</div>
+  <div style="font-size:13px; color:var(--grey-brown);">vs previous tick</div>
+</div>
           <div class="stat-card">
-            Wait Change
-            <div id="simWaitChange" style="font-size:28px; font-weight:700; margin-top:6px;">--</div>
-            <div style="font-size:12px; color:var(--grey-brown);">vs previous tick</div>
-          </div>
+  <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Wait Change</div>
+  <div id="simWaitChange" style="font-size:28px; font-weight:700; margin-top:6px;">--</div>
+  <div style="font-size:13px; color:var(--grey-brown);">vs previous tick</div>
+</div>
         </div>
 
         <!-- Current State inline row -->
         <div class="wide-card" style="margin-top:4px;">
-          <div style="font-size:12px; color:var(--grey-azure); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;">Current State</div>
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <div style="text-align:center;">
-              <div style="font-size:11px; color:var(--grey-azure);">Doctors</div>
-              <div id="simDoctors" style="font-size:22px; font-weight:700; color:var(--patients-served-color, #1a7a5e);">--</div>
-            </div>
-            <div style="text-align:center;">
-              <div style="font-size:11px; color:var(--grey-azure);">Nurses</div>
-              <div id="simNurses" style="font-size:22px; font-weight:700; color:var(--patients-served-color, #1a7a5e);">--</div>
-            </div>
-            <div style="width:1px; height:36px; background:var(--grey-azure, #ccc); opacity:0.3;"></div>
-            <div style="text-align:center;">
-              <div style="font-size:11px; color:var(--grey-azure);">ICU</div>
-              <div id="simIcu" style="font-size:22px; font-weight:700; color:var(--cost-increase-color, #c0392b);">--</div>
-            </div>
-            <div style="text-align:center;">
-              <div style="font-size:11px; color:var(--grey-azure);">Ward</div>
-              <div id="simWard" style="font-size:22px; font-weight:700; color:var(--cost-increase-color, #c0392b);">--</div>
-            </div>
-            <div style="text-align:center;">
-              <div style="font-size:11px; color:var(--grey-azure);">ER</div>
-              <div id="simEr" style="font-size:22px; font-weight:700; color:var(--cost-increase-color, #c0392b);">--</div>
-            </div>
-          </div>
-        </div>
+  <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Current State</div>
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div style="text-align:left;">
+      <div style="font-size:15px; color:var(--grey-azure);">Doctors</div>
+      <div id="simDoctors" style="font-size:36px; font-weight:700; color:#4caf82;">--</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:15px; color:var(--grey-azure);">Nurses</div>
+      <div id="simNurses" style="font-size:36px; font-weight:700; color:#4caf82;">--</div>
+    </div>
+  </div>
+</div>
 
         <!-- Interpretation -->
-        <div class="wide-card" style="margin-top:4px;">
-          <div style="font-size:12px; color:var(--grey-azure); margin-bottom:4px;">Interpretation</div>
-          <div id="simInterpretation" style="font-size:15px; font-weight:600;">--</div>
-        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%;">
+  <div class="wide-card">
+    <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Interpretation</div>
+    <div id="simInterpretation" style="font-size:14px;">--</div>
+  </div>
 
-        <!-- Insight -->
-        <div class="wide-card" style="margin-top:8px;">
-          <div style="font-size:12px; color:var(--grey-azure); margin-bottom:4px;">Insight</div>
-          <div id="simInsight" style="font-size:14px;">--</div>
-        </div>
+  <!-- Insight -->
+  <div class="wide-card">
+    <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Insight</div>
+    <div id="simInsight" style="font-size:14px;">--</div>
+  </div>
+</div>
 
-        <!-- Update log -->
-        <div style="margin-top:16px;">
-          <div style="font-size:11px; color:var(--grey-azure); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Update Log</div>
-          <div id="simLog" style="display:flex; flex-direction:column; gap:5px; max-height:180px; overflow-y:auto;"></div>
-        </div>
+    
 
       </div>
     </div>
