@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import json
-import re
+import os
 from pathlib import Path
 from typing import Any, Dict
 
@@ -96,7 +95,11 @@ def simulate(payload: Dict[str, Any]) -> Dict[str, Any]:
     bed_gap = max(0, int(patients * 0.25) - total_beds)
 
     wait_time = round(
-        15 + (doctor_load * 6) + (nurse_load * 2.5) + (avg_complexity * 8) + (bed_gap * 1.5),
+        15
+        + (doctor_load * 6)
+        + (nurse_load * 2.5)
+        + (avg_complexity * 8)
+        + (bed_gap * 1.5),
         1,
     )
 
@@ -141,58 +144,25 @@ def simulate(payload: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def build_rule_based_recommendation(sim_result: Dict[str, Any]) -> Dict[str, str]:
-    r = sim_result["results"]
-
-    analysis = (
-        f"The simulation served {r['estimated_patients_served']} patients with an estimated "
-        f"waiting time of {r['estimated_wait_time_minutes']} minutes. "
-        f"Doctor load is {r['doctor_load']} and nurse load is {r['nurse_load']}."
-    )
-
-    if r["doctor_load"] >= 16 or r["estimated_wait_time_minutes"] > 100:
-        recommendation = "Add at least 1 doctor because doctor workload and waiting time are high."
-    elif r["nurse_load"] > 10:
-        recommendation = "Add 1 to 2 nurses to improve patient flow and reduce workload pressure."
-    else:
-        recommendation = "Current staffing is acceptable. Continue monitoring demand and waiting time."
-
-    cost_impact = (
-        f"The additional staffing cost is RM {r['staffing_cost_rm']}. "
-        "This cost should be compared with the expected improvement in waiting time and patient flow."
-    )
-
-    return {
-        "analysis": analysis,
-        "recommendation": recommendation,
-        "cost_impact": cost_impact,
-    }
-
-
 def ask_ai_for_simulation(sim_result: Dict[str, Any]) -> Dict[str, str]:
     api_key = ai_service.api_key
     model = ai_service.model
     base_url = ai_service.base_url
     url = base_url.rstrip("/") + "/chat/completions"
 
-    fallback = build_rule_based_recommendation(sim_result)
-
     if not api_key:
-        return fallback
+        raise ValueError("AI API key is missing.")
 
     r = sim_result["results"]
 
     prompt = f"""
-You are a hospital resource assistant.
-
-Answer in exactly 3 lines.
+Answer in exactly 3 short lines.
 Do not use JSON.
 Do not use markdown.
-Do not use numbering.
 
-Line 1 must start with: Analysis:
-Line 2 must start with: Recommendation:
-Line 3 must start with: Cost Impact:
+Analysis: explain the current performance.
+Recommendation: suggest one resource action.
+Cost Impact: explain the cost effect.
 
 Data:
 Wait time: {r['estimated_wait_time_minutes']} minutes
@@ -203,62 +173,111 @@ Added cost: RM {r['staffing_cost_rm']}
 Status: {r['status']}
 """
 
-    try:
-        res = requests.post(
-            url,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
+    res = requests.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 2500,
+            "temperature": 0.3,
+        },
+        timeout=120,
+    )
+
+    res.raise_for_status()
+
+    data = res.json()
+    content = data.get("choices", [{}])[0].get("message", {}).get("content")
+
+    if not content:
+        raise ValueError("AI returned empty response.")
+
+    analysis = ""
+    recommendation = ""
+    cost_impact = ""
+
+    for line in content.strip().splitlines():
+        line = line.strip()
+
+        if line.lower().startswith("analysis:"):
+            analysis = line.split(":", 1)[1].strip()
+
+        elif line.lower().startswith("recommendation:"):
+            recommendation = line.split(":", 1)[1].strip()
+
+        elif line.lower().startswith("cost impact:"):
+            cost_impact = line.split(":", 1)[1].strip()
+
+    if not analysis or not recommendation or not cost_impact:
+        raise ValueError("AI response format is invalid.")
+
+    return {
+        "analysis": analysis,
+        "recommendation": recommendation,
+        "cost_impact": cost_impact,
+    }
+
+
+def get_dashboard_simulation_summary() -> Dict[str, Any]:
+    global latest_dashboard_data
+
+    if latest_dashboard_data is None:
+        latest_dashboard_data = simulate_once("normal")
+
+    data = latest_dashboard_data
+    s = data["state"]
+
+    total_patients = s["icu_patients"] + s["ward_patients"] + s["er_patients"]
+
+    return {
+        "department": "Pediatrics",
+        "patients": total_patients,
+        "doctors": s["doctors"],
+        "nurses": s["nurses"],
+        "icu_patients": s["icu_patients"],
+        "ward_patients": s["ward_patients"],
+        "er_patients": s["er_patients"],
+        "current_cost": data["current_cost"],
+        "current_waiting_time": round(data["current_waiting_time"], 1),
+        "cost_change": data["cost_change"],
+        "waiting_time_change": round(data["waiting_time_change"], 1),
+        "patients_served": data["patients_served"],
+        "interpretation": data["interpretation"],
+        "insight": data["insight"],
+    }
+
+
+def dashboard_fallback_recommendations(summary: Dict[str, Any]) -> Dict[str, Any]:
+    wait = summary["current_waiting_time"]
+    patients = summary["patients"]
+    doctors = summary["doctors"]
+    nurses = summary["nurses"]
+
+    return {
+        "source": "simulation fallback",
+        "data_summary": summary,
+        "suggestions": [
+            {
+                "title": "Review current staffing",
+                "explanation": f"Current simulation shows {doctors} doctors and {nurses} nurses handling {patients} patients.",
+                "priority": "High",
             },
-            json={
-                "model": model,
-                "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": 2500,
-                "temperature": 0.3,
+            {
+                "title": "Monitor waiting time",
+                "explanation": f"Waiting time is currently {wait} minutes, so patient flow should be monitored closely.",
+                "priority": "Medium",
             },
-            timeout=120,
-        )
-
-        res.raise_for_status()
-
-        data = res.json()
-        content = data.get("choices", [{}])[0].get("message", {}).get("content")
-
-        if not content:
-            print("[AI EMPTY RESPONSE]", data)
-            return fallback
-
-        content = content.strip()
-
-        analysis = fallback["analysis"]
-        recommendation = fallback["recommendation"]
-        cost_impact = fallback["cost_impact"]
-
-        for line in content.splitlines():
-            line = line.strip()
-
-            if line.lower().startswith("analysis:"):
-                analysis = line.split(":", 1)[1].strip()
-
-            elif line.lower().startswith("recommendation:"):
-                recommendation = line.split(":", 1)[1].strip()
-
-            elif line.lower().startswith("cost impact:"):
-                cost_impact = line.split(":", 1)[1].strip()
-
-        return {
-            "analysis": analysis,
-            "recommendation": recommendation,
-            "cost_impact": cost_impact,
-        }
-
-    except requests.exceptions.Timeout:
-        print("[AI TIMEOUT]")
-        return fallback
-
-    except Exception as exc:
-        print("[AI ERROR]", exc)
-        return fallback
+            {
+                "title": "Prepare resource support",
+                "explanation": "Prepare extra staff or bed support if patient load increases.",
+                "priority": "Medium",
+            },
+        ],
+    }
 
 
 @app.get("/")
@@ -308,8 +327,14 @@ def api_context():
 
 @app.get("/api/recommendations")
 def api_recommendations():
-    result = ai_service.generate_suggestions()
-    return jsonify(result), 200
+    summary = get_dashboard_simulation_summary()
+
+    try:
+        result = ai_service.generate_suggestions(summary)
+        return jsonify(result), 200
+    except Exception as exc:
+        print("[DASHBOARD AI ERROR]", exc)
+        return jsonify(dashboard_fallback_recommendations(summary)), 200
 
 
 @app.get("/api/cost-efficiency")
@@ -376,16 +401,27 @@ def api_recommendation():
     }
 
     sim_result = simulate(payload)
-    recommendation = ask_ai_for_simulation(sim_result)
 
-    return jsonify({
-        "analysis": recommendation["analysis"],
-        "recommendation": recommendation["recommendation"],
-        "cost_impact": recommendation["cost_impact"],
-        "simulation": sim_result,
-    }), 200
+    try:
+        recommendation = ask_ai_for_simulation(sim_result)
+
+        return jsonify({
+            "analysis": recommendation["analysis"],
+            "recommendation": recommendation["recommendation"],
+            "cost_impact": recommendation["cost_impact"],
+            "simulation": sim_result,
+        }), 200
+
+    except Exception as exc:
+        print("[WHAT-IF AI ERROR]", exc)
+
+        return jsonify({
+            "error": "AI recommendation failed. Please try again later.",
+            "details": str(exc),
+            "simulation": sim_result,
+        }), 500
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)
