@@ -1,0 +1,400 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+ --bg: #f4f7fb;
+ --card: #ffffff;
+ --text: #3e576d;
+ --muted: #6c8ba4;
+ --azure: #81a6c6;
+ --pastel-grey-azure: #aacddc;
+ --light-orange: #f3e3d0;
+ --grey-azure: #3e576d;
+ --grey-brown: #6a6156;
+ --green: #2a7d55;
+ --red: #bd3535;
+ --border: #dbe4f0;
+}
+
+body {
+    font-family: 'Lexend Deca';
+    color: var(--text);
+    background: var(--bg);
+    padding: 20px;
+    margin: 0;
+    padding: 0; 
+}
+
+.bg-wrapper {
+    background-image: url("bg_homepage.png");
+    background-size: 1350px 550px;
+    background-position: center 120px;
+    background-repeat: no-repeat;
+    padding: 40px;
+    border-radius: 50px;
+    overflow: hidden; 
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    color: white;
+    font-size: 40px;
+    flex-direction: column;
+    margin-top: 100px;
+    gap: 20px;
+    align-items: center;
+}
+
+.floating-panel {
+    display: grid;  /*forces 4 columns*/
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background: var(--card);
+    padding: 40px 20px;
+    border-radius: 30px;
+    text-align:center;
+    height: 450px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.card h3 {
+    font-family: 'Bebas Neue';
+    font-size: 50px;
+    font-weight: normal;
+    margin-top: 10px;
+    color: var(--grey-azure);
+}
+
+#patientsValue, #waitingTime, #staffNumber, #bedValue {
+    font-family: 'Bebas Neue';
+    font-size: 35px;
+    font-weight: bold;
+    text-align: center;
+    color: var(--grey-azure);
+    margin-top: 10px;
+}
+
+.input-panel, .output-panel {
+    background: var(--pastel-grey-orange);
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+}
+
+.green { background: var(--green); }
+.yellow { background: var(--light-orange); }
+.red { background: var(--red); }
+
+
+/*second page*/
+.split-screen {
+    display: flex;          /* This puts the columns side-by-side */
+    height: 100vh;         /* Makes the container full screen height */
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.left-column {
+    flex: 1;               /* Takes up 50% of the space */
+    background-color: var(--light-orange);
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.left-column h2 { /*AI Suggestion title*/
+    color: var(--grey-brown);
+    text-align: center;
+    font-size: 30px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.right-column h2 { /*Cost vs efficiency title*/ 
+    color: var(--grey-azure);
+    text-align: center;
+    font-size: 30px;
+    padding: 20px;
+}
+
+.right-column {
+    flex: 1;               /* Takes up the other 50% */
+    background-color: var(--pastel-grey-azure);
+    padding: 20px;
+    width: 100%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.column-wrapper {
+    flex: 1;
+    display: flex;
+    padding: 20px;
+}
+
+.generate-btn {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: var(--grey-azure);
+    margin-top: 20px;
+    margin-bottom: 15px;
+    width: 50%;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.see-all-btn {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: var(--pastel-grey-azure);
+    margin-bottom: 15px;
+    width: 50%;
+    padding: 10px;
+    border-radius: 20px;
+}
+
+.suggestion-card, .wide-card {
+    background: white;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    width: 80%;
+    padding: 30px;
+    min-height: 150px;
+    font-size: 20px;
+    color: var(--grey-azure);
+    text-align: center;
+    min-height: max-content;
+    align-items: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.stats-grid { /*for columns under cost vs efficiency*/
+    display: flex;          /* This puts the columns side-by-side */
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    gap: 20px;
+}
+
+.stat-card {    /*cost increase and patient served*/
+    background: white;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    min-height: 150px;
+    padding: 30px;
+    font-size: 20px;
+    color: #3e576d;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 0;
+    width: 0;
+}
+
+.cost-increase, .patients-served {
+    color: var(--green);
+    padding: 25px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 50px;
+}
+
+.wait-time-reduction {
+    color: var(--red);
+    margin-top: 15px;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 50px;
+}
+
+
+/*navigation tab*/
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  background-color: var(--white);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky; 
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100 px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 35px;
+  color: var(--azure);
+  font-weight: bold;
+}
+
+span.nav-title {
+  font-size: 16px;
+  font-weight: normal;
+  color: var(--azure);
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-item {
+  text-decoration: none;
+  font-family: 'Lexend Deca';
+  color: var(--grey-azure);
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: 0.3s;
+  font-size: 15px;
+}
+
+/* Hover effect when pointed */
+.nav-item:hover {
+  background-color: var(--pastel-grey-azure);
+  color: white;
+}
+
+/* 'Active' class to show which page users are on */
+.nav-item.active {
+  border-bottom: 3px solid var(--azure);
+  color: var(--azure);
+}
+
+@media (max-width: 768px) {
+    .split-screen {
+        flex-direction: column; /* Stacks them on top of each other for smaller screens */
+    }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: #ffffff;
+  width: 90%;
+  max-width: 760px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #244a67;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  color: #333;
+}
+
+.modal-body {
+  display: grid;
+  gap: 14px;
+}
+
+.info-card {
+  background: #f7fbfd;
+  border-radius: 16px;
+  padding: 16px 18px;
+  border-left: 6px solid #7bb7d8;
+}
+
+.info-card h4 {
+  margin: 0 0 8px 0;
+  color: #244a67;
+  font-size: 18px;
+}
+
+.info-card p,
+.info-card pre {
+  margin: 0;
+  color: #3f5668;
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.see-all-btn {
+  background: #d7edf7;
+  color: #173c52;
+  border: 2px solid #7bb7d8;
+  border-radius: 999px;
+  padding: 12px 28px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.see-all-btn:hover {
+  background: #c6e6f4;
+}
