@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HaiDIS</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">HaiDIS <span class="nav-title">Hospital AI Decision Intelligence System</span></div>
+    <div class="nav-tabs">
+      <a href="/" class="nav-item active">Dashboard</a>
+      <a href="/simulator" class="nav-item">Simulation</a>
+    </div>
+  </nav>
+
+  <!-- TOP: Situation Hero -->
+  <section id="situation" class="bg-wrapper" style="background-image: url('{{ url_for('static', filename='bg_homepage.png') }}');">
+    <div class="container">
+      <h1>What's the situation today?</h1>
+      <div class="floating-panel">
+        <div class="card">
+          <h3>Total Patients</h3>
+          <p id="patientsValue">--</p>
+        </div>
+        <div class="card">
+          <h3>Waiting Time</h3>
+          <p id="waitingTime">--</p>
+        </div>
+        <div class="card">
+          <h3>Doctors on Duty</h3>
+          <p id="staffDoctors">--</p>
+        </div>
+        <div class="card">
+          <h3>Nurses on Duty</h3>
+          <p id="staffNurses">--</p>
+        </div>
+        <div class="card">
+          <h3>Available Bed</h3>
+          <p id="bedValue">--</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM: Split Panel -->
+  <section id="analysis" class="split-screen">
+
+    <!-- LEFT: AI Suggestion -->
+    <div class="column-wrapper">
+      <div id="ai-suggestion" class="left-column">
+        <h2>AI Suggestion</h2>
+
+        <div id="suggestionList" style="width:95%; display:flex; flex-direction:column; gap:12px; flex-grow:1;">
+          <div class="suggestion-card">Loading...</div>
+          <div class="suggestion-card">Loading...</div>
+          <div class="suggestion-card">Loading...</div>
+        </div>
+
+        <button class="generate-btn" id="generateBtn">Generate +</button>
+       <!--<button class="see-all-btn" id="seeAllBtn">See All</button>-->
+      </div>
+    </div>
+
+    <!-- RIGHT: Cost vs Efficiency (Live Simulation) -->
+    <div class="column-wrapper">
+      <div id="cost-efficiency" class="right-column">
+        <h2>Cost vs Efficiency</h2>
+        <p style="font-size:13px; color:var(--grey-azure); margin-bottom:14px;">Live Updates</p>
+
+        <!-- Cost change + Wait change badges -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Cost Change</div>
+            <div id="simCostChange" style="font-size:28px; font-weight:700; margin-top:6px;">--</div>
+            <div style="font-size:13px; color:var(--grey-brown);">vs previous tick</div>
+          </div>
+          <div class="stat-card">
+            <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Wait Change</div>
+            <div id="simWaitChange" style="font-size:28px; font-weight:700; margin-top:6px;">--</div>
+            <div style="font-size:13px; color:var(--grey-brown);">vs previous tick</div>
+          </div>
+        </div>
+
+        <!-- Current State inline row -->
+        <div class="wide-card" style="margin-top:4px;">
+          <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Current State</div>
+          <div style="display:flex; justify-content:center; align-items:center; gap:60px;">
+            <div style="text-align:center;">
+              <div style="font-size:15px; color:var(--grey-azure);">Doctors</div>
+              <div id="simDoctors" style="font-size:36px; font-weight:700; color:#4caf82;">--</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:15px; color:var(--grey-azure);">Nurses</div>
+              <div id="simNurses" style="font-size:36px; font-weight:700; color:#4caf82;">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interpretation + Insight side by side -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%;">
+          <div class="wide-card">
+            <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Interpretation</div>
+            <div id="simInterpretation" style="font-size:14px;">--</div>
+          </div>
+          <div class="wide-card">
+            <div style="font-size:18px; font-weight:600; margin-bottom:8px;">Insight</div>
+            <div id="simInsight" style="font-size:14px;">--</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Modal: All Recommendation History -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>All Recommendations</h2>
+        <button id="closeModalBtn" class="close-btn">×</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
