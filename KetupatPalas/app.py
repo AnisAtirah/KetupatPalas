@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import re
 from pathlib import Path
 from typing import Any, Dict
 
@@ -29,7 +31,6 @@ ai_service = AIService(
     model=app.config["ILMU_MODEL"],
 )
 
-# This stores the SAME dashboard simulation data
 latest_dashboard_data = None
 
 
@@ -140,72 +141,66 @@ def simulate(payload: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def build_rule_based_recommendation(sim_result: Dict[str, Any]) -> str:
+def build_rule_based_recommendation(sim_result: Dict[str, Any]) -> Dict[str, str]:
     r = sim_result["results"]
-    inp = sim_result["inputs"]
-    actions = []
 
-    if r["doctor_load"] >= 16 or r["estimated_wait_time_minutes"] > 100:
-        actions.append("Add at least 1 doctor because doctor workload and waiting time are too high.")
-    if r["nurse_load"] > 10:
-        actions.append("Add 1 to 2 nurses to improve patient flow and reduce pressure.")
-    if r["total_beds"] < int(inp["patients"] * 0.25):
-        actions.append("Increase bed capacity because current beds may be insufficient.")
-    if not actions:
-        actions.append("Current staffing is acceptable. Maintain the plan and continue monitoring demand.")
-
-    return (
-        f"Status: {r['status']}. "
-        f"Estimated wait time is {r['estimated_wait_time_minutes']} minutes, "
-        f"with {r['estimated_patients_served']} patients served "
-        f"and RM{r['staffing_cost_rm']} added cost. "
-        + " ".join(actions)
+    analysis = (
+        f"The simulation served {r['estimated_patients_served']} patients with an estimated "
+        f"waiting time of {r['estimated_wait_time_minutes']} minutes. "
+        f"Doctor load is {r['doctor_load']} and nurse load is {r['nurse_load']}."
     )
 
+    if r["doctor_load"] >= 16 or r["estimated_wait_time_minutes"] > 100:
+        recommendation = "Add at least 1 doctor because doctor workload and waiting time are high."
+    elif r["nurse_load"] > 10:
+        recommendation = "Add 1 to 2 nurses to improve patient flow and reduce workload pressure."
+    else:
+        recommendation = "Current staffing is acceptable. Continue monitoring demand and waiting time."
 
-def ask_ai_for_simulation(sim_result: Dict[str, Any]) -> str:
+    cost_impact = (
+        f"The additional staffing cost is RM {r['staffing_cost_rm']}. "
+        "This cost should be compared with the expected improvement in waiting time and patient flow."
+    )
+
+    return {
+        "analysis": analysis,
+        "recommendation": recommendation,
+        "cost_impact": cost_impact,
+    }
+
+
+def ask_ai_for_simulation(sim_result: Dict[str, Any]) -> Dict[str, str]:
     api_key = ai_service.api_key
     model = ai_service.model
     base_url = ai_service.base_url
     url = base_url.rstrip("/") + "/chat/completions"
 
-    if not api_key:
-        return build_rule_based_recommendation(sim_result)
+    fallback = build_rule_based_recommendation(sim_result)
 
-    inp = sim_result["inputs"]
+    if not api_key:
+        return fallback
+
     r = sim_result["results"]
 
     prompt = f"""
-You are an AI assistant for a Pediatrics hospital resource dashboard.
+You are a hospital resource assistant.
 
-Analyze this simulation result and give:
-1. Performance analysis
-2. Recommendation
-3. Cost impact
+Answer in exactly 3 lines.
+Do not use JSON.
+Do not use markdown.
+Do not use numbering.
 
-Use simple English.
-Keep it under 120 words.
+Line 1 must start with: Analysis:
+Line 2 must start with: Recommendation:
+Line 3 must start with: Cost Impact:
 
-Current state:
-Patients: {inp['patients']}
-Doctors: {inp['doctors']}
-Nurses: {inp['nurses']}
-Beds: {inp['beds']}
-
-After changes:
-Doctors: {r['total_doctors']}
-Nurses: {r['total_nurses']}
-Beds: {r['total_beds']}
-
-Simulation result:
+Data:
 Wait time: {r['estimated_wait_time_minutes']} minutes
 Patients served: {r['estimated_patients_served']}
 Doctor load: {r['doctor_load']}
 Nurse load: {r['nurse_load']}
-Added cost: RM{r['staffing_cost_rm']}
+Added cost: RM {r['staffing_cost_rm']}
 Status: {r['status']}
-
-Give an AI recommendation only based on this data.
 """
 
     try:
@@ -223,16 +218,47 @@ Give an AI recommendation only based on this data.
             },
             timeout=120,
         )
+
         res.raise_for_status()
+
         data = res.json()
-        return data["choices"][0]["message"]["content"].strip()
+        content = data.get("choices", [{}])[0].get("message", {}).get("content")
+
+        if not content:
+            print("[AI EMPTY RESPONSE]", data)
+            return fallback
+
+        content = content.strip()
+
+        analysis = fallback["analysis"]
+        recommendation = fallback["recommendation"]
+        cost_impact = fallback["cost_impact"]
+
+        for line in content.splitlines():
+            line = line.strip()
+
+            if line.lower().startswith("analysis:"):
+                analysis = line.split(":", 1)[1].strip()
+
+            elif line.lower().startswith("recommendation:"):
+                recommendation = line.split(":", 1)[1].strip()
+
+            elif line.lower().startswith("cost impact:"):
+                cost_impact = line.split(":", 1)[1].strip()
+
+        return {
+            "analysis": analysis,
+            "recommendation": recommendation,
+            "cost_impact": cost_impact,
+        }
 
     except requests.exceptions.Timeout:
-        return "⚠️ AI error: The AI took too long to respond. Please try again."
+        print("[AI TIMEOUT]")
+        return fallback
 
     except Exception as exc:
-        print(f"[AI] Error: {exc}")
-        return build_rule_based_recommendation(sim_result)
+        print("[AI ERROR]", exc)
+        return fallback
 
 
 @app.get("/")
@@ -319,7 +345,7 @@ def page_simulator():
 
 @app.get("/api/summary")
 def api_summary():
-    return jsonify({"baseline": get_fixed_baseline()})
+    return jsonify({"baseline": get_fixed_baseline()}), 200
 
 
 @app.post("/api/simulate")
@@ -334,7 +360,7 @@ def api_simulate():
         "add_beds": user_input.get("add_beds", 0),
     }
 
-    return jsonify(simulate(payload))
+    return jsonify(simulate(payload)), 200
 
 
 @app.post("/api/recommendation")
@@ -353,11 +379,12 @@ def api_recommendation():
     recommendation = ask_ai_for_simulation(sim_result)
 
     return jsonify({
-        "recommendation": recommendation,
+        "analysis": recommendation["analysis"],
+        "recommendation": recommendation["recommendation"],
+        "cost_impact": recommendation["cost_impact"],
         "simulation": sim_result,
-    })
+    }), 200
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True, host="0.0.0.0", port=5000)
