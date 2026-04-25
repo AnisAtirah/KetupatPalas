@@ -15,13 +15,13 @@ AI-powered decision intelligence system for hospital resource optimisation, redu
 - JavaScript (Frontend)
 
 ## How to Run
-IN TERMINAL:
-pip install -r requirements.txt
+**IN TERMINAL:**\
+pip install -r requirements.txt\
 python main.py
 
 ## Example Output
-Cost Change: +1200
-Waiting Time Change: -10 minutes
+Cost Change: +1200\
+Waiting Time Change: -10 minutes\
 Interpretation: Cost increased ⚠️ | Waiting time improved 🚀
 
 ## Limitations
