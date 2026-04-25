@@ -1,4 +1,8 @@
 # HaiDIS: Hospital AI Decision Intelligent System
+
+## Pitching Video
+https://drive.google.com/file/d/1mwKRuVmsrUr9RMTmKkkFGUHqHJeJ4SiQ/view?usp=sharing
+
 ## Overview
 AI-powered decision intelligence system for hospital resource optimisation, reducing waiting time, improving staff allocation, and enhancing operational efficiency using Z.AI GLM.
 
